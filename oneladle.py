@@ -204,6 +204,24 @@ class Experiment:
         self.build_id = data_version_id
 
 
+def create_extended_entries(entries,
+                            window_size,
+                            concat_symbol="|",
+                            ):
+    """Creates extended entries by concatenating at most window_size consecutive log
+    entries. The entries are joined with the specified concat_symbol.
+    Extended entries have a stride of one; i.e. there is one extended entry for each
+    original entry. At the tail end, extended entries terminate at the end of the
+    entry list even if the window is not full.
+    NOTE: This function does not add start/end tokens as this would change the number
+    of entries."""
+    extended_entries = []
+    for i in range(len(entries)):
+        extended_entry = concat_symbol.join(entries[i : i + window_size])
+        extended_entries.append(extended_entry)
+    return extended_entries
+
+
 def embed_entries(
     extended_entry_lists,
     embedder,
